@@ -1,0 +1,6 @@
+CREATE TABLE historical_surges (
+  date timestamp, 
+  areaCode integer, 
+  multiplier decimal, 
+  success boolean
+) WITH CLUSTERING ORDER BY (date DESC);

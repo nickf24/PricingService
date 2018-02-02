@@ -11,7 +11,7 @@ CREATE TABLE pricing2 (
     date_time timestamp,
     multiplier decimal,
     success varchar,
-    PRIMARY KEY(areacode, date_time, success)
+    PRIMARY KEY(areacode, date_time)
 ) WITH CLUSTERING ORDER BY (date_time DESC);
 
 
@@ -21,7 +21,7 @@ CREATE TABLE pricing3 (
     date_time timestamp,
     multiplier decimal,
     success varchar,
-    PRIMARY KEY(areacode, date_time)
+    PRIMARY KEY(areacode, date_time, uid)
 ) WITH CLUSTERING ORDER BY (date_time DESC);
 
 -- areaCode, JSON.stringify(date), multiplier, success

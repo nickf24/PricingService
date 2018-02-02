@@ -1,0 +1,17 @@
+config:
+  target: 'http://localhost:3000'
+  processor: "./artillery-post-functions.js"
+  phases:
+    - duration: 60
+      arrivalRate: 10
+  defaults:
+    headers:
+      'Content-Type' : application/json
+scenarios:
+  - flow:
+    - function: "generateRandomData"
+    - loop: 
+      - post:
+          url: "/history"
+          json: {"areacode" : "{{areacode}}", date_time : "{{ date }}", "multiplier": 2.7, "success" : "true", "uid" : 10000004}
+      count: 100

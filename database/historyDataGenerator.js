@@ -133,31 +133,6 @@ var generator = function() {
 }
 
 
-// console.log(results);
-// let writeStream = fs.createWriteStream('history.txt');
-
-// for (var i = 0; i < 10000000; i++) {
-//   var row = generator().join(',');
-//   writeStream.write(i + ',' + row + os.EOL)
-// }
-// writeStream.on('end', () => {
-//   console.log('wrote all data to file');
-// })
-// writeStream.end();
-// console.log(results.length)
-// console.log(results.slice(0, 100))
-
-// let writeStream = fs.createWriteStream('testHistory.txt');
-
-// for (var i = 0; i < 10000000; i++) {
-//   var row = generator().join(',');
-//   writeStream.write(row + ',' + i + os.EOL)
-// }
-// writeStream.on('end', () => {
-//   console.log('wrote all data to file');
-// })
-// writeStream.end();
-
 let writeStream = fs.createWriteStream('testHistory.txt');
 
 for (var i = 0; i < 10000000; i++) {

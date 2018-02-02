@@ -2,7 +2,7 @@ config:
   target: 'http://localhost:3000'
   processor: "./artillery-post-functions.js"
   phases:
-    - duration: 60
+    - duration: 20
       arrivalRate: 10
   defaults:
     headers:
@@ -10,8 +10,24 @@ config:
 scenarios:
   - flow:
     - function: "generateRandomData"
-    - loop: 
-      - post:
-          url: "/history"
-          json: {"areacode" : "{{areacode}}", date_time : "{{ date }}", "multiplier": 2.7, "success" : "true", "uid" : 10000004}
-      count: 100
+    - post:
+        url: "/history"
+        json: {"areacode" : 2000, date_time : "{{ date }}", "multiplier": 2.8, "success" : "true", "uid" : 10000004}
+
+# config:
+#  target: 'http://localhost:3000'
+#  processor: "./artillery-post-functions.js"
+#  phases:
+#    - duration: 20
+#      arrivalRate: 10
+#  defaults:
+#    headers:
+#      'Content-Type' : application/json
+# scenarios:
+#  - flow:
+#    - function: "generateRandomData"
+#    - loop:
+#      - post:
+#          url: "/history"
+#          json: {"areacode" : "{{ areacode }}", date_time : "{{ date }}", "multiplier": 2.7, "success" : "true", "uid" : 10000004}
+#      count: 1000

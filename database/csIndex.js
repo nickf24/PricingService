@@ -14,8 +14,12 @@ let getRequestsByAreaCode = function(areacode) {
 }
 
 let insertRequest = function(params) {
+  // console.log('PARAMS', params);
+  // console.log(params.areacode)
   let query = `INSERT INTO nick.pricing2 (areacode, date_time, multiplier, success, uid) VALUES (${params.areacode}, '${params.date_time}', ${params.multiplier}, '${params.success}', ${params.uid})`
-  // console.log('post query is', query);
+  console.log('post query is', query);
+  // let query = `INSERT INTO nick.pricing2 (areacode, date_time, multiplier, success, uid) VALUES (${params.areacode}, '${params.date_time}', ${params.multiplier}, '${params.success}', ${params.uid})`
+
   return client.execute(query).then((result) => result);
 }
 

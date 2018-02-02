@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.188.0",
     "cassandra-driver": "^3.3.0",
     "express-cassandra": "^2.1.1",
     "faker": "^4.1.0",

@@ -15,6 +15,7 @@ router.get('/requests/:areacode', async (ctx) => {
   let areaCode = Number(ctx.req.url.split('/')[2])
   try {
     var outcome = await db.getRequestsByAreaCode(areaCode);
+    // console.log(outcome);
     ctx.body = outcome.rows;	
   }	catch (err) {
   	console.log(err);
@@ -23,9 +24,10 @@ router.get('/requests/:areacode', async (ctx) => {
 
 router.post('/history', async (ctx) => {
   try {
-    // console.log(ctx.request.body);
+    console.log(ctx.request.body);
     var outcome = await db.insertRequest(ctx.request.body);
   	// console.log(outcome);
+    ctx.status = 201;
   } catch (err) {
   	console.log(err);
   }

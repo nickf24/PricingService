@@ -5,16 +5,6 @@ const bodyParser = require('koa-bodyparser');
 const app = new Koa();
 const PORT = process.env.PORT || 3000;
 // AWS
-////
-// var AWS = require('aws-sdk');
-// // AWS.config.update({region: 'us-west-1'});
-// AWS.config.update({
-//     accessKeyId: "AKIAJLJSNZXIIMB7AZFQ",
-//     secretAccessKey: "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",
-//     "region": "us-west-1"  
-// });
-// var sqs = new AWS.SQS({apiVersion: '2012-11-05'});
-
 
 // var params = {
 //   QueueName: 'SQS_QUEUE_NAME',

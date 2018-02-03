@@ -2,6 +2,9 @@ const Router = require('koa-router');
 const router = new Router();
 const db = require('../database/csIndex.js');
 const mongo = require('../database/mongoIndex.js');
+const algos = require('../algorithms/surgeAlgorithm.js');
+
+// let holdingObj = algos.populateObj();
 
 router.get('/', async (ctx) => {
   ctx.body = {
@@ -9,7 +12,6 @@ router.get('/', async (ctx) => {
     message: 'hello, world!'
   };
 })
-
 
 router.get('/requests/:areacode', async (ctx) => {
   // console.log(Number(ctx.req.url.split('/')[2]));
@@ -21,6 +23,32 @@ router.get('/requests/:areacode', async (ctx) => {
     ctx.body = outcome.rows;	
   }	catch (err) {
   	console.log(err);
+  }
+});
+
+router.get('/average/:areacode', async (ctx) => {
+  // console.log(Number(ctx.req.url.split('/')[2]));
+  let areaCode = Number(ctx.req.url.split('/')[2])
+  try {
+    var outcome = await db.getAverageSuccessByAreaCode(areaCode);
+    console.log('outcome is', outcome);
+    // THIS IS FOR INTERNAL (ALGORITHM) USE ONLY
+    ctx.body = outcome; 
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+router.get('/avgmultiplier/:areacode', async (ctx) => {
+  // console.log(Number(ctx.req.url.split('/')[2]));
+  let areaCode = Number(ctx.req.url.split('/')[2])
+  try {
+    var outcome = await db.getAverageMultiplierByAreaCode(areaCode);
+    // console.log(outcome);
+    // THIS IS FOR INTERNAL (ALGORITHM) USE ONLY
+    ctx.body = outcome; 
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -49,8 +77,18 @@ router.get('/multiplier/:areacode', async (ctx) => {
   }
 })
 
-router.post('/multiplier', async (ctx) => {
+router.post('/market', async (ctx) => {
   let params = ctx.request.body;
+  // these will be currentDrivers, currentRiders, surgeZone
+  // send off request to surgeAlgorithm for current 
+  console.log(params);
+  var outcome = algos.getSurgeByAreaCode(params.areacode, params.drivers, params.riders)
+  console.log(outcome)
+})
+
+router.post('/multiplier', async (ctx) => {
+
+  // post to multiplier with 'areacode', 'currentSurge' each time jackie posts to /market
   // console.log('params are', params);
   // THIS IS AN INTERNAL ROUTE ONLY
   try {

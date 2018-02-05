@@ -15,6 +15,7 @@ router.get('/', async (ctx) => {
 
 router.get('/requests/:areacode', async (ctx) => {
   // console.log(Number(ctx.req.url.split('/')[2]));
+  // console.log()
   let areaCode = Number(ctx.req.url.split('/')[2])
   try {
     var outcome = await db.getRequestsByAreaCode(areaCode);
@@ -54,7 +55,7 @@ router.get('/avgmultiplier/:areacode', async (ctx) => {
 
 router.post('/history', async (ctx) => {
   try {
-    console.log(ctx.request.body);
+    // console.log(ctx.request.body);
     // THIS IS WHAT DILLON IS POSTING TO
     var outcome = await db.insertRequest(ctx.request.body);
   	// console.log(outcome);
@@ -81,9 +82,12 @@ router.post('/market', async (ctx) => {
   let params = ctx.request.body;
   // these will be currentDrivers, currentRiders, surgeZone
   // send off request to surgeAlgorithm for current 
-  console.log(params);
-  var outcome = algos.getSurgeByAreaCode(params.areacode, params.drivers, params.riders)
-  console.log(outcome)
+  console.log('params are', params);
+  var outcome = await algos.getSurgeByAreaCode(params.areacode, params.drivers, params.riders)
+  console.log('outcome is', outcome);
+  
+  mongo.updateSurge({ areacode: params.areacode, multiplier: outcome});
+  
 })
 
 router.post('/multiplier', async (ctx) => {

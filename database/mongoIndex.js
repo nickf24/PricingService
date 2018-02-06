@@ -23,14 +23,20 @@ let save = (params) => {
 let updateSurge = (params) => {
   var query = {'areacode': params.areacode};
   surgeList.findOneAndUpdate(query, { $set: {'areacode': params.areacode, 'multiplier': params.multiplier} }, {upsert: true, returnNewDocument: true}).then((result) => {
-    console.log(result);
+    // console.log(result);
     return result;
   })
 }
 
 let getSurgeByArea = (areacode) => {
   return surgeList.find({"areacode": areacode}).then((result) => {
-  	return result;
+    // console.log('result in getSurgeByArea', result);
+    if (result.length > 0) {
+      return result[0].multiplier;  
+    } else {
+      return undefined;
+    }
+  	
   });
 }
 

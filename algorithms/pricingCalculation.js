@@ -21,6 +21,12 @@ let distanceInKmBetweenEarthCoordinates = function(lat1, lon1, lat2, lon2) {
 let pricingCalculation = function(fromLoc, toLoc, multiplier = 1) {
   // fromLoc = [lat, long]
   // toLoc = [lat, long]
+  // console.log(fromLoc)
+  // console.log(toLoc)
+  // console.log(fromLoc[0])
+  fromLoc = JSON.parse(fromLoc);
+  toLoc = JSON.parse(toLoc);
+  // console.log(fromLoc[0])
   if (fromLoc[0] > 85 || toLoc[0] > 85 || fromLoc[0] < -85 || toLoc[0] < -85 || fromLoc[1] > 180 || fromLoc[1] < -180 || toLoc[1] > 180 || toLoc[0] < -180) {
   	console.log('invalid coordinates');
   	return null;
@@ -32,6 +38,7 @@ let pricingCalculation = function(fromLoc, toLoc, multiplier = 1) {
   }
 
   let distance = distanceInKmBetweenEarthCoordinates(fromLoc[0], fromLoc[1], toLoc[0], toLoc[1]);
+  console.log('success! distance is', distance)
   return multiplier * distance * 1.5;
 }
 

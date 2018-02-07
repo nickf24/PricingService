@@ -4,79 +4,37 @@ const db = require('../database/csIndex.js');
 const mongo = require('../database/mongoIndex.js');
 const surgeCalc = require('../algorithms/surgeAlgorithm.js');
 const priceCalc = require('../algorithms/pricingCalculation.js');
-
-router.get('/', async (ctx) => {
-  ctx.body = {
-    status: 'success',
-    message: 'hello, world!'
-  };
-})
-
-router.get('/multiplier/:areacode', async (ctx) => {
-  let areacode = Number(ctx.req.url.split('/')[2]);
-  try {
-    var result = await mongo.getSurgeByArea(areacode);
-    // in order to get this request, jackie mustve already posted the
-    // console.log('result in areacode', result);
-    // THIS IS THE MULTIPLIER TO SEND BACK TO MARK, MARK'S ROUTE
-    // if (!pet) return ctx.throw('cannot find that pet', 404);
-    // console.log('RESULT IS', result)
-    if (!result) {
-      // console.log('here, failed')
-      return ctx.throw('cannot find that area code', 404) 
-    } else { 
-      ctx.status = 200;
-      ctx.body = result;
-      return result;
-    }
-  } catch(err) {
-    console.log('here in error', err);
-  }
-})
+const snsRouter = require('./snsHelpers.js');
+const sqsRouter = require('./sqsHelpers.js');
 
 router.post('/price', async (ctx) => {
-  try {
+  
     let params = ctx.request.body;
+    snsRouter.sendPriceAfterRequest(params);
     // expecting fromLoc/toLoc to be in form ['lat', 'long']
-    var outcome = await priceCalc.pricingCalculation(params.fromLoc, params.toLoc, params.multiplier);
-    ctx.status = 200;
-    ctx.body = outcome;
-    // console.log('outcome is', outcome)
-    return outcome;
-  } catch (err) {
-    console.log(err);
-  }
+    ctx.status = 201;
+
 });
 
 router.post('/history', async (ctx) => {
-  try {
+
+    // refactor this in order to SUBSCRIBE to SNS 
     // console.log(ctx.request.body);
     // THIS IS WHAT DILLON IS POSTING TO
+    // want to queue these up
     var outcome = await db.insertRequest(ctx.request.body);
     // console.log(outcome);
     ctx.status = 201;
-  } catch (err) {
-    console.log(err);
-  }
-})
-
+});
 
 router.post('/market', async (ctx) => {
-  try {
     let params = ctx.request.body;
-    // these will be currentDrivers, currentRiders, surgeZone
-    // send off request to surgeAlgorithm for current 
-    // console.log('params are', params);
-    var outcome = await surgeCalc.getSurgeByAreaCode(params.areacode, params.drivers, params.riders);
-    // console.log('outcome is', outcome);
-    
     mongo.updateSurge({ areacode: params.areacode, multiplier: outcome});
-    // send to mark?
+    // update current surge in MongoDB
+    snsRouter.sendSurgeByAreaCode(areacode);
+    // send surge by area code
     ctx.body = 'success';
     ctx.status = 201;
-  } catch (err) {
-    console.log(err);
-  }
 })
 
 router.get('/average/:areacode', async (ctx) => {
@@ -93,6 +51,78 @@ router.get('/average/:areacode', async (ctx) => {
 module.exports = router;
 
 
+
+// router.post('/history', async (ctx) => {
+//   try {
+//     // refactor this in order to SUBSCRIBE to SNS 
+//     // console.log(ctx.request.body);
+//     // THIS IS WHAT DILLON IS POSTING TO
+//     var outcome = await db.insertRequest(ctx.request.body);
+//     // console.log(outcome);
+//     ctx.status = 201;
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
+
+// router.get('/multiplier/:areacode', async (ctx) => {
+//   let areacode = Number(ctx.req.url.split('/')[2]);
+//   snsRouter.sendSurgeByAreaCode(areacode);
+// });
+
+// router.get('/multiplier/:areacode', async (ctx) => {
+//   let areacode = Number(ctx.req.url.split('/')[2]);
+//   try {
+//     var result = await mongo.getSurgeByArea(areacode);
+//     // in order to get this request, jackie mustve already posted the
+//     // console.log('result in areacode', result);
+//     // THIS IS THE MULTIPLIER TO SEND BACK TO MARK, MARK'S ROUTE
+//     // if (!pet) return ctx.throw('cannot find that pet', 404);
+//     // console.log('RESULT IS', result)
+//     if (!result) {
+//       // console.log('here, failed')
+//       return ctx.throw('cannot find that area code', 404) 
+//     } else { 
+//       ctx.status = 200;
+//       ctx.body = result;
+//       return result;
+//     }
+//   } catch(err) {
+//     console.log('here in error', err);
+//   }
+// })
+
+// router.post('/market', async (ctx) => {
+//   try {
+//     let params = ctx.request.body;
+//     // these will be currentDrivers, currentRiders, surgeZone
+//     // send off request to surgeAlgorithm for current 
+//     // console.log('params are', params);
+//     var outcome = await surgeCalc.getSurgeByAreaCode(params.areacode, params.drivers, params.riders);
+//     // console.log('outcome is', outcome);
+    
+//     mongo.updateSurge({ areacode: params.areacode, multiplier: outcome});
+//     // send to mark?
+//     ctx.body = 'success';
+//     ctx.status = 201;
+//   } catch (err) {
+//     console.log(err);
+//   }
+// })
+
+// router.post('/price', async (ctx) => {
+//   try {
+//     let params = ctx.request.body;
+//     // expecting fromLoc/toLoc to be in form ['lat', 'long']
+//     var outcome = await priceCalc.pricingCalculation(params.fromLoc, params.toLoc, params.multiplier);
+//     ctx.status = 200;
+//     ctx.body = outcome;
+//     // console.log('outcome is', outcome)
+//     return outcome;
+//   } catch (err) {
+//     console.log(err);
+//   }
+// });
 
 // router.get('/multiplier/:areacode', async (ctx) => {
 //   let areacode = Number(ctx.req.url.split('/')[2]);

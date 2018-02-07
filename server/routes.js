@@ -62,19 +62,34 @@ router.post('/history', async (ctx) => {
 
 
 router.post('/market', async (ctx) => {
-  let params = ctx.request.body;
-  // these will be currentDrivers, currentRiders, surgeZone
-  // send off request to surgeAlgorithm for current 
-  // console.log('params are', params);
-  var outcome = await surgeCalc.getSurgeByAreaCode(params.areacode, params.drivers, params.riders)
-  // console.log('outcome is', outcome);
-  
-  mongo.updateSurge({ areacode: params.areacode, multiplier: outcome});
-  // send to mark?
-  ctx.status = 201;
+  try {
+    let params = ctx.request.body;
+    // these will be currentDrivers, currentRiders, surgeZone
+    // send off request to surgeAlgorithm for current 
+    // console.log('params are', params);
+    var outcome = await surgeCalc.getSurgeByAreaCode(params.areacode, params.drivers, params.riders);
+    // console.log('outcome is', outcome);
+    
+    mongo.updateSurge({ areacode: params.areacode, multiplier: outcome});
+    // send to mark?
+    ctx.body = 'success';
+    ctx.status = 201;
+  } catch (err) {
+    console.log(err);
+  }
 })
 
-//
+router.get('/average/:areacode', async (ctx) => {
+  // THIS IS FOR TESTING HOW FAST THE ALGORITHM GETS DATA FROM CASSANDRA - NOT FUNCTIONAL
+  let areaCode = Number(ctx.req.url.split('/')[2])
+  try {
+    var outcome = await db.getAverageSuccessByAreaCode(areaCode);
+    ctx.body = outcome; 
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 module.exports = router;
 
 
@@ -92,18 +107,6 @@ module.exports = router;
 //   }
 // })
 
-// router.get('/average/:areacode', async (ctx) => {
-//   // console.log(Number(ctx.req.url.split('/')[2]));
-//   let areaCode = Number(ctx.req.url.split('/')[2])
-//   try {
-//     var outcome = await db.getAverageSuccessByAreaCode(areaCode);
-//     console.log('outcome is', outcome);
-//     // THIS IS FOR INTERNAL (ALGORITHM) USE ONLY
-//     ctx.body = outcome; 
-//   } catch (err) {
-//     console.log(err);
-//   }
-// });
 
 // router.get('/avgmultiplier/:areacode', async (ctx) => {
 //   // console.log(Number(ctx.req.url.split('/')[2]));

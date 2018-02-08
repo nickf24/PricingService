@@ -3,7 +3,9 @@ const axios = require('axios');
 const path = require('path');
 const Consumer = require('sqs-consumer');
 
-AWS.config.loadFromPath(path.join(__dirname + '/../config.json'));
+var credentials = new AWS.SharedIniFileCredentials();
+AWS.config.credentials = credentials;
+// AWS.config.loadFromPath(path.join(__dirname + '/../config.json'));
 AWS.config.update({region: 'us-west-1'});
 
 var sqs = new AWS.SQS({apiVersion: '2012-11-05'});

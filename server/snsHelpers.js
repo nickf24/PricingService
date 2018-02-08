@@ -20,6 +20,7 @@ sendSurgeByAreaCode = async (areacode) => {
   	MessageStructure: 'json',
   	TargetArn: 'arn:aws:sns:us-west-1:627311198652:Surge'
   }
+  
   sns.publish(params, function(err, data) {
   	if (err) {
   	  console.log('error with SNS publish', err);
@@ -31,18 +32,18 @@ sendSurgeByAreaCode = async (areacode) => {
 
 sendPriceAfterRequest = async (params) => {
 	var outcome = await priceCalc.pricingCalculation(params.fromLoc, params.toLoc, params.multiplier);
-    var params = {
-  	  Message: JSON.stringify({default: outcome}),
-  	  MessageStructure: 'json',
-  	  TargetArn: 'arn:aws:sns:us-west-1:627311198652:Pricing'
-    }
+  var params = {
+  	Message: JSON.stringify({default: outcome}),
+  	MessageStructure: 'json',
+  	TargetArn: 'arn:aws:sns:us-west-1:627311198652:Pricing'
+  }
   sns.publish(params, function(err, data) {
   	if (err) {
   	  console.log('error with SNS publish', err);
   	} else {
   	  console.log('successful publish to SNS');
   	}
-  })
+  });
 }
   
 module.exports = {

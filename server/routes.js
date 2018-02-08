@@ -7,31 +7,33 @@ const priceCalc = require('../algorithms/pricingCalculation.js');
 const snsRouter = require('./snsHelpers.js');
 const sqsRouter = require('./sqsHelpers.js');
 
+sqsRouter.consumeSQSMessages('LocationToPricing', 'market');
+sqsRouter.consumeSQSMessages('EventsToPricing', 'history');
+
 router.post('/price', async (ctx) => {
   
     let params = ctx.request.body;
     snsRouter.sendPriceAfterRequest(params);
     // expecting fromLoc/toLoc to be in form ['lat', 'long']
     ctx.status = 201;
-
 });
 
 router.post('/history', async (ctx) => {
-
-    // refactor this in order to SUBSCRIBE to SNS 
-    // console.log(ctx.request.body);
     // THIS IS WHAT DILLON IS POSTING TO
-    // want to queue these up
     var outcome = await db.insertRequest(ctx.request.body);
     // console.log(outcome);
     ctx.status = 201;
 });
 
 router.post('/market', async (ctx) => {
+    // needs to SUBSCRIBE to SNS 
+    // console.log('here')
+
     let params = ctx.request.body;
+    let outcome = await surgeCalc.getSurgeByAreaCode(params.areacode, params.drivers, params.riders);
     mongo.updateSurge({ areacode: params.areacode, multiplier: outcome});
     // update current surge in MongoDB
-    snsRouter.sendSurgeByAreaCode(areacode);
+    // snsRouter.sendSurgeByAreaCode(areacode);
     // send surge by area code
     ctx.body = 'success';
     ctx.status = 201;
@@ -50,6 +52,20 @@ router.get('/average/:areacode', async (ctx) => {
 
 module.exports = router;
 
+
+// pullMessagesFromSQS('LocationToPricing', 'market');
+// pullMessagesFromSQS('EventsToPricing', 'history');
+
+
+// let pullMessagesFromSQS = async function(endpoint, postRoute) {
+//   // let messagesInQueue = await sqsRouter.getQueueAttributes(endpoint);
+//   // console.log(endpoint, messagesInQueue);
+//   // while (messagesInQueue > 0) {
+//     // setInterval(() => sqsRouter.getSQSMessageAndPost(endpoint, postRoute), 5000);
+//     sqsRouter.getSQSMessageAndPost(endpoint, postRoute);
+//     // messagesInQueue--;
+//   // }
+// }
 
 
 // router.post('/history', async (ctx) => {

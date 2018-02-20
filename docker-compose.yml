@@ -1,0 +1,25 @@
+version: '3'
+services: 
+  web:
+    image: nickf24/thesis
+    links:
+      - mongo
+      - cassandra 
+    volumes: 
+      - ./:/thesis
+    ports: 
+      - 3000:3000
+  mongo:
+    image: "mongo"
+    ports: 
+      - 27018:27018
+    environment: 
+      - MONGO_DB='mongodb://mongo/thesis'
+  cassandra:
+    image: "nickf24/db"
+    ports: 
+      - 9042:9042
+    volumes: 
+      - ./:/thesis/database/cassandra
+    
+

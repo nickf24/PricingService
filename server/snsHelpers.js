@@ -1,14 +1,14 @@
 const path = require('path');
 // const PORT = process.env.PORT || 3000;
-const mongo = require('../database/mongoIndex.js');
-const cass = require('../database/csIndex.js');
+const mongo = require('../database/mongo/mongoIndex.js');
+const cass = require('../database/cassandra/csIndex.js');
 const priceCalc = require('../algorithms/pricingCalculation.js');
 const AWS = require('aws-sdk');
 
 // Set the region 
 
-var credentials = new AWS.SharedIniFileCredentials();
-AWS.config.credentials = credentials;
+// var credentials = new AWS.SharedIniFileCredentials();
+// AWS.config.credentials = credentials;
 
 // AWS.config.loadFromPath(path.join(__dirname + '/../config.json'));
 AWS.config.update({region: 'us-west-1'});

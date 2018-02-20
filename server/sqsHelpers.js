@@ -3,8 +3,8 @@ const axios = require('axios');
 const path = require('path');
 const Consumer = require('sqs-consumer');
 
-var credentials = new AWS.SharedIniFileCredentials();
-AWS.config.credentials = credentials;
+// var credentials = new AWS.SharedIniFileCredentials();
+// AWS.config.credentials = credentials;
 // AWS.config.loadFromPath(path.join(__dirname + '/../config.json'));
 AWS.config.update({region: 'us-west-1'});
 
@@ -76,13 +76,13 @@ module.exports = {
 // }
 
 // var removeFromQueue = function(message, url) {
-//    sqs.deleteMessage({
-//       QueueUrl: url,
-//       ReceiptHandle: message.ReceiptHandle
-//    }, function(err, data) {
-//       // If we errored, tell us that we did
-//       err && console.log(err);
-//    });
+   // sqs.deleteMessage({
+   //    QueueUrl: url,
+   //    ReceiptHandle: message.ReceiptHandle
+   // }, function(err, data) {
+   //    // If we errored, tell us that we did
+   //    err && console.log(err);
+   // });
 // };
 //   var params = {
 //     AttributeNames: ['SentTimestamp'],

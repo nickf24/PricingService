@@ -1,4 +1,4 @@
-const cass = require('../database/csIndex.js');
+const cass = require('../database/cassandra/csIndex.js');
 // const mongo = require('../database/mongoIndex.js');
 // does initial load from Cassandra DB 
 
@@ -11,9 +11,15 @@ var getAreaCodeSuccess = async function(areacode) {
   });
 }
 
-var getSurgeByAreaCode = async function(areacode,  drivers, riders) {
+var getSurgeByAreaCode = async function(areacode, drivers, riders) {
   var adjustFactor;
+  if (typeof areacode !== 'number' || typeof drivers !== 'number' || typeof riders !== 'number') {
+    return null;
+  }
   var multiplyFactor = await getAreaCodeSuccess(areacode);
+  if (drivers <= 0) {
+    return Number(((Math.random() + 1) * 5).toFixed(1)) * 1.5
+  }
   // console.log('multiply factor is', multiplyFactor);
   if (riders / drivers > 1.35) {
   	// charge very high

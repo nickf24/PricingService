@@ -1,0 +1,16 @@
+config:
+  target: 'http://52.53.162.141:3000'
+  processor: "./artillery-generate-functions.js"
+  phases:
+    - duration: 60
+      arrivalRate: 1
+  defaults:
+    headers:
+      x-my-service-auth: ''
+scenarios:
+    - flow:
+        - loop:
+            - function: "generateGetDataProduction"
+            - get:
+                url: "{{ areacode2 }}"
+          count: 200

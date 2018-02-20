@@ -1,7 +1,7 @@
 const Router = require('koa-router');
 const router = new Router();
-const db = require('../database/csIndex.js');
-const mongo = require('../database/mongoIndex.js');
+const db = require('../database/cassandra/csIndex.js');
+const mongo = require('../database/mongo/mongoIndex.js');
 const surgeCalc = require('../algorithms/surgeAlgorithm.js');
 const priceCalc = require('../algorithms/pricingCalculation.js');
 const snsRouter = require('./snsHelpers.js');
@@ -10,18 +10,21 @@ const sqsRouter = require('./sqsHelpers.js');
 sqsRouter.consumeSQSMessages('LocationToPricing', 'market');
 sqsRouter.consumeSQSMessages('EventsToPricing', 'history');
 
+router.get('/', async (ctx) => {
+  ctx.body = 'Home page'
+  ctx.status = 200;
+});
+
 router.post('/price', async (ctx) => {
-  
-    let params = ctx.request.body;
-    snsRouter.sendPriceAfterRequest(params);
+  let params = ctx.request.body;
+  snsRouter.sendPriceAfterRequest(params);
+  ctx.status = 201;
     // expecting fromLoc/toLoc to be in form ['lat', 'long']
-    ctx.status = 201;
 });
 
 router.post('/history', async (ctx) => {
     // THIS IS WHAT DILLON IS POSTING TO
     var outcome = await db.insertRequest(ctx.request.body);
-    // console.log(outcome);
     ctx.status = 201;
 });
 

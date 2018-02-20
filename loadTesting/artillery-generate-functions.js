@@ -6,6 +6,13 @@ function generateGetData(userContext, events, done) {
   return done();
 }
 
+function generateGetDataProduction(userContext, events, done) {
+  var areacode = Math.floor(Math.random() * 201);
+  userContext.vars.areacode2 = `/average/${areacode}`;
+  return done();
+}
+
+
 function generatePostData(userContext, events, done) {
   // generate data with Faker:
   var fakeDate = Faker.date.between('2011-01-01', '2017-12-31');
@@ -37,6 +44,7 @@ function generateMarketData(userContext, events, done) {
 
 module.exports = {
   generateGetData,
+  generateGetDataProduction,
   generatePostData,
   generateMarketData
 };

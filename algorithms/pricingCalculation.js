@@ -38,7 +38,7 @@ let pricingCalculation = function(fromLoc, toLoc, multiplier = 1) {
   }
 
   let distance = distanceInKmBetweenEarthCoordinates(fromLoc[0], fromLoc[1], toLoc[0], toLoc[1]);
-  console.log('success! distance is', distance)
+  // console.log('success! distance is', distance)
   return multiplier * distance * 1.5;
 }
 

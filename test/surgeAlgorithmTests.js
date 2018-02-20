@@ -1,33 +1,44 @@
 const chai = require('chai');
 const assert = require('assert');
+const surgeCalc = require('../algorithms/surgeAlgorithm.js');
 
-const priceCalc = require('../algorithms/pricingCalculation.js');
+const expect = chai.expect;
 
-describe('pricing calculation', function() {
-  it ('should return a type number', function() {
-  	var result = priceCalc.pricingCalculation(['60.5387', '-131.5378'], ['60.5387', '-131.5678'], 2.1)
-  	assert.equal(typeof result, 'number');
+describe('surge calculation', function() {
+  it ('should return a number with riders/drivers > 1.35', async function() {
+    var result = await surgeCalc.getSurgeByAreaCode(100, 70, 100);
+    assert.equal(typeof result, 'number');
   });
 
-  it ('should apply the surge multiplier to the distance travelled', function() {
-  	var resultWithMultiplier = priceCalc.pricingCalculation(['31.6732', '-131.5378'], ['31.6932', '-131.5678'], 1.8);
-  	var resultNoMultiplier = priceCalc.pricingCalculation(['31.6732', '-131.5378'], ['31.6932', '-131.5678'], 1);
-  	assert.equal((resultWithMultiplier/1.8).toFixed(2), resultNoMultiplier.toFixed(2));
+  it ('should return a number with 1.35 >= riders/drivers > 1.25', async function() {
+    var result = await surgeCalc.getSurgeByAreaCode(19, 70, 87);
+    assert.equal(typeof result, 'number');
   });
 
-  it ('should return null for invalid coordinates', function() {
-  	var result = priceCalc.pricingCalculation(['1800', '2003'], ['290', '32'], 1);
-  	assert.equal(result, null);
+
+  it ('should return a number with 1.25 >= riders/drivers > 1.1', async function() {
+    var result = await surgeCalc.getSurgeByAreaCode(15, 70, 80);
+    assert.equal(typeof result, 'number');
   });
 
-  it ('should return 0 for the same coordinates', function() {
-  	var result = priceCalc.pricingCalculation(['0', '0'], ['0', '0'], 2);
-  	assert.equal(result, 0);
+  it ('should return a number with  1.1 >= riders/drivers > 0.9', async function() {
+    var result = await surgeCalc.getSurgeByAreaCode(102, 70, 70);
+    assert.equal(typeof result, 'number');
   });
 
-  it ('should handle invalid types of coordinates by returning null', function() {
-  	var result = priceCalc.pricingCalculation(['this', 'is'], ['1.2', '2.2'], 1);
-  	assert.equal(result, null);
-  })
+  it ('should return 1 with riders/drivers <= 0.9', async function() {
+    var result = await surgeCalc.getSurgeByAreaCode(21, 70, 50);
+    assert.equal(typeof result, 'number');
+  });
 
-})
+  it ('should return null for invalid input', async function() {
+    var result = await surgeCalc.getSurgeByAreaCode(11, 'string', 100);
+    assert.equal(result, null);
+  });
+
+  it ('should handle 0 drivers with a surge of above 7', async function() {
+    var result = await surgeCalc.getSurgeByAreaCode(11, 0, 100);
+    expect(result).to.be.above(7);
+  });
+
+});

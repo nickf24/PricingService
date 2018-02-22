@@ -13,8 +13,7 @@ Service Architecture https://imgur.com/a/U2y7h
 - Cassandra
 - Koa 2.x.x
 
->>>>>>> add to readMe
-
+## Set-up
 From within the root directory:
 
 ```sh
